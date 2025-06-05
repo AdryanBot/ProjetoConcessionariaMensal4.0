@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+
+  <!-- Definição de configurações relacionadas à codificação de arquivos dentro do projeto -->
+  <component name="Encoding">
+
+    <!-- Define a codificação de arquivos dentro do diretório src/main/java para UTF-8 -->
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+
+    <!-- Define a codificação de arquivos dentro do diretório src/main/resources para UTF-8 -->
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+
+  </component>
+</project>

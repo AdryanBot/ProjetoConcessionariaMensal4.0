@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+
+  <!-- Configuração do componente responsável pela gestão de armazenamento externo (como dependências externas) -->
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+
+  <!-- Configuração do Maven, indicando que o arquivo pom.xml está presente no projeto -->
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+      </list>
+    </option>
+  </component>
+
+  <!-- Configuração do gerenciador de raiz do projeto, definindo configurações como o JDK a ser usado -->
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="17" project-jdk-type="JavaSDK">
+    <!-- Diretório de saída para os arquivos compilados -->
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+
+</project>

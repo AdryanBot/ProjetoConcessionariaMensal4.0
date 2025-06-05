@@ -1,0 +1,22 @@
+<configuration>
+
+    <!-- Definição de um appender para saída no console -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- Define o formato de exibição das mensagens no console -->
+            <pattern>%msg%n</pattern> <!-- Exibe apenas a mensagem da log, sem outros detalhes -->
+        </encoder>
+    </appender>
+
+    <!-- Definição do nível de log da raiz (root) -->
+    <root level="ERROR">
+        <!-- Aponta o appender STDOUT para a raiz, ou seja, as mensagens de log de nível ERROR serão exibidas no console -->
+        <appender-ref ref="STDOUT" />
+    </root>
+
+    <!-- Configurações específicas para o Hibernate -->
+    <logger name="org.hibernate" level="ERROR"/> <!-- Configura o nível de log para a biblioteca do Hibernate como ERROR (exibe apenas erros) -->
+    <logger name="org.hibernate.SQL" level="OFF"/> <!-- Desativa os logs de consultas SQL do Hibernate -->
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="OFF"/> <!-- Desativa logs relacionados ao tipo de dados do Hibernate -->
+
+</configuration>

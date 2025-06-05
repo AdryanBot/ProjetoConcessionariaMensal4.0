@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+
+  <!-- Componente que configura o controle de versão do diretório do projeto -->
+  <component name="VcsDirectoryMappings">
+    <!-- Define um mapeamento de diretório para o Git -->
+    <!-- O diretório vazio "" indica que o controle de versão Git é aplicado a todo o projeto -->
+    <mapping directory="" vcs="Git" />
+  </component>
+
+</project>

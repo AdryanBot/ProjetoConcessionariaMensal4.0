@@ -1,0 +1,34 @@
+<hibernate-configuration>
+    <!-- Definição da fábrica de sessões do Hibernate -->
+    <session-factory>
+        <!-- Configuração da conexão com o banco de dados PostgreSQL -->
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property> <!-- Driver JDBC para PostgreSQL -->
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/postgres</property> <!-- URL de conexão com o banco de dados -->
+        <property name="hibernate.connection.username">postgres</property> <!-- Usuário para acessar o banco de dados -->
+        <property name="hibernate.connection.password">admin</property> <!-- Senha para acessar o banco de dados -->
+
+        <!-- Configuração do dialeto do Hibernate para PostgreSQL -->
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+
+        <!-- Definição do comportamento de gerenciamento do esquema de banco de dados -->
+        <property name="hibernate.hbm2ddl.auto">update</property> <!-- Configuração para atualização automática do esquema do banco de dados -->
+
+        <!-- Configuração para mostrar as consultas SQL no console -->
+        <property name="hibernate.show_sql">true</property> <!-- Habilita a exibição das consultas SQL geradas pelo Hibernate -->
+
+        <!-- Configuração para formatar as consultas SQL exibidas -->
+        <property name="hibernate.format_sql">true</property> <!-- Habilita a formatação das consultas SQL exibidas no console -->
+
+        <!-- Mapeamento das entidades que o Hibernate deve gerenciar -->
+        <mapping class="entities.Cliente"/> <!-- Mapeamento da entidade Cliente -->
+        <mapping class="entities.Vendas"/> <!-- Mapeamento da entidade Vendas -->
+        <mapping class="entities.Veiculo"/> <!-- Mapeamento da entidade Veículo -->
+        
+        <!-- Mapeamento dos repositórios, embora normalmente entidades sejam mapeadas, não repositórios -->
+        <mapping class="repositories.CarroRepository"/> <!-- Mapeamento do repositório Carro -->
+        <mapping class="repositories.MotoRepository"/> <!-- Mapeamento do repositório Moto -->
+        <mapping class="repositories.CaminhaoRepository"/> <!-- Mapeamento do repositório Caminhão -->
+        <mapping class="repositories.VendasRepository"/> <!-- Mapeamento do repositório Vendas -->
+        <mapping class="repositories.ClienteRepository"/> <!-- Mapeamento do repositório Cliente -->
+    </session-factory>
+</hibernate-configuration>
