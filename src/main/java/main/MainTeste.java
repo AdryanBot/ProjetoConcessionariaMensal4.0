@@ -1,19 +1,29 @@
 package main;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 // Importa o cliente da API da FIPE e a classe responsável pelo cadastro e operações do sistema
 import api.FipeApiClient;
 import controller.Cadastro;
+import entities.Cliente;
+import entities.Veiculo;
+import entities.Vendas;
+import repositories.*;
+import services.*;
 
 // Importações do Hibernate para configurar conexão com o banco de dados
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.util.ArrayList;
 // Importações para leitura de dados e redirecionamento de logs
 import java.util.Scanner;
 import java.util.logging.LogManager;
@@ -21,6 +31,16 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 
 
 public class MainTeste extends JFrame{
+    FipeApiClient fipe = new FipeApiClient();
+    Cadastro cadastros = new Cadastro(); 
+    
+
+    ArrayList<Veiculo> listaVeiculos = new ArrayList<>();
+    ArrayList<Vendas> listaVendas = new ArrayList<>();
+    ArrayList<Cliente> listaCliente = new ArrayList<>();
+
+    VeiculoService veiculoServ = new VeiculoService();
+    ClienteService clienteServ = new ClienteService();
 
     public MainTeste(){
         setTitle("Gestão de Concessionária");
@@ -151,10 +171,94 @@ public class MainTeste extends JFrame{
         painelPrincipal.setBounds(220, 0, 860, 720);
         add(painelPrincipal);
 
+        
+
+        //alterna a visibilidade das vendas
+        btnvendasRealizadas.addActionListener(e -> {
+            painelPrincipal.removeAll(); // limpa tudo do painel
+    
+            List<Vendas> vendas = VendasService.listarTodas();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+            int y = 10;
+
+            for (Vendas v : vendas) {
+                String texto = "ID: " + v.getId() +
+                        " | Cliente: " + v.getNomeCliente() +
+                        " | Veículo: " + v.getModeloVeiculo() + " - " + v.getMarcaVeiculo() +
+                        " | Preço: " + v.getPrecoVeiculo() +
+                        " | Data: " + v.getDataVenda().format(formatter);
+
+                JLabel label = new JLabel(texto);
+                label.setBounds(10, y, 550, 20);
+                painelPrincipal.add(label);
+                y += 25;
+            }
+
+            painelPrincipal.revalidate();
+            painelPrincipal.repaint();
+        });
+        
+        btnClientes.addActionListener(e ->{
+            painelPrincipal.removeAll();
+            
+            List<Cliente> clientes = clienteServ.listarTodos();
+
+            for (Cliente c : clientes) {
+                String texto = "ID: " + c.getId() +
+                        " | Nome: " + c.getNome() +
+                        " | CPF: " + c.getCpf() +
+                        " | Data de Nascimento: " + c.getDateB();
+                JLabel label = new JLabel(texto);
+                label.setBounds(10, 0, 550, 20);
+                painelPrincipal.add(label);
+            }
+
+            painelPrincipal.revalidate();
+            painelPrincipal.repaint();
+        });
+        
+        //alterna a visibilidade das veiculos
+        btnVeiculos.addActionListener(e -> {
+            painelPrincipal.removeAll(); // limpa tudo do painel
+            
+            List<Veiculo> veiculos = veiculoServ.listarTodos();
+
+            for(Veiculo v: veiculos){
+                String texto = "ID: " + v.getId() +
+                        " | Tipo: " + (v.getVeiculoTipo() == 1 ? "Carro" : v.getVeiculoTipo() == 2 ? "Moto" : "Caminhão") +
+                        " | Modelo: " + v.getModelo() +
+                        " | Marca: " + v.getMarca() +
+                        " | Ano: " + v.getAno() +
+                        " | Preço: " + v.getPreco() +
+                        " | Combustível: " + v.getCombustivel();
+                JLabel label = new JLabel(texto);
+                label.setBounds(10, 0, 550, 20); // Ajuste conforme o tamanho do painel
+                painelPrincipal.add(label);
+            }
+            painelPrincipal.revalidate();
+            painelPrincipal.repaint();
+        });
+
         setVisible(true);
     }
     
     public static void main(String[] args) {
+        LogManager.getLogManager().reset();
+        SLF4JBridgeHandler.install();
+
+        // Testa conexão com o banco de dados usando Hibernate
+        try {
+            SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+            Session session = sessionFactory.openSession();
+            System.out.println("Conexão com o banco de dados estabelecida com sucesso!\n");
+            session.close();
+            sessionFactory.close();
+        } catch (Exception e) {
+            // Se houver erro ao conectar, exibe e encerra o programa
+            System.err.println("Falha ao conectar ao banco de dados: " + e.getMessage());
+            e.printStackTrace();
+            return;
+        }
         SwingUtilities.invokeLater(MainTeste::new);
     }
 }
