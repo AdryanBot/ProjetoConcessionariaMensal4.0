@@ -3,9 +3,15 @@ package main;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -39,6 +45,7 @@ public class MainTeste extends JFrame {
 
     VeiculoService veiculoServ = new VeiculoService();
     ClienteService clienteServ = new ClienteService();
+    VendasService vendasServ = new VendasService();
 
     public MainTeste() {
         setTitle("Gestão de Concessionária");
@@ -179,7 +186,80 @@ public class MainTeste extends JFrame {
                     v.getDataVenda().format(formatter)
             });
 
-            painelPrincipal.add(tabelaScroll, BorderLayout.CENTER);
+            DatePickerSettings configuracoesInicial = new DatePickerSettings();
+            configuracoesInicial.setLocale(new java.util.Locale("pt", "BR"));
+            configuracoesInicial.setFormatForDatesCommonEra("dd/MM/yyyy");
+
+            DatePickerSettings configuracoesFinal = new DatePickerSettings();
+            configuracoesFinal.setLocale(new java.util.Locale("pt", "BR"));
+            configuracoesFinal.setFormatForDatesCommonEra("dd/MM/yyyy");
+
+            DatePicker dataInicialPicker = new DatePicker(configuracoesInicial);
+            DatePicker dataFinalPicker = new DatePicker(configuracoesFinal);
+
+            JPanel painelDatas = new JPanel();
+                painelDatas.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+
+                painelDatas.add(new JLabel("Data Inicial:"));
+                painelDatas.add(dataInicialPicker);
+
+                painelDatas.add(new JLabel("Data Final:"));
+                painelDatas.add(dataFinalPicker);
+
+                JButton btnBuscarVendas = new JButton();
+                btnBuscarVendas.setText("Buscar Vendas");
+                painelDatas.add(btnBuscarVendas);
+            
+            JPanel resultadoFiltro = new JPanel(new BorderLayout());
+
+                btnBuscarVendas.addActionListener(ev ->{
+                    LocalDate dataInicio = dataInicialPicker.getDate();
+                    LocalDate dataFim = dataFinalPicker.getDate();
+
+                    if(dataInicio == null || dataFim == null){
+                        JOptionPane.showMessageDialog(this, "Preencha os campos de datas para realizar a busca.");
+                        return;
+                    }
+
+                    if (dataInicio.isAfter(dataFim)) {
+                        JOptionPane.showMessageDialog(painelPrincipal, "Data inicial não pode ser depois da data final.");
+                        return;
+                    }
+
+                     resultadoFiltro.removeAll();
+
+                    LocalDateTime inicio = dataInicio.atStartOfDay();
+                    LocalDateTime fim = dataFim.atTime(LocalTime.MAX);
+
+                    List<Vendas> vendas1 = vendasServ.buscarPorPeriodo(inicio, fim);
+
+                    JScrollPane tabelaScroll1 = TabelaUtils.gerarTabela(colunas, vendas1, ve -> new Object[]{
+                            ve.getId(),
+                            ve.getNomeCliente(),
+                            ve.getModeloVeiculo(),
+                            ve.getMarcaVeiculo(),
+                            ve.getPrecoVeiculo(),
+                            ve.getDataVenda().format(formatter)
+                    }); 
+                    
+                    JLabel label = new JLabel("Resultado da busca entre os dias: "+ inicio.format(formatter)+" e "+fim.format(formatter));
+
+                    resultadoFiltro.add(label, BorderLayout.NORTH);
+                    resultadoFiltro.add(tabelaScroll1);
+                    resultadoFiltro.revalidate();
+                    resultadoFiltro.repaint();
+                });
+            
+            JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+            splitPane.setTopComponent(tabelaScroll);
+            splitPane.setBottomComponent(resultadoFiltro);
+            splitPane.setResizeWeight(0.5);
+            splitPane.setDividerLocation(250);
+
+            painelPrincipal.setLayout(new BorderLayout());
+            painelPrincipal.add(painelDatas, BorderLayout.NORTH);
+            painelPrincipal.add(splitPane, BorderLayout.CENTER);
+            
             painelPrincipal.revalidate();
             painelPrincipal.repaint();
         });
@@ -219,6 +299,7 @@ public class MainTeste extends JFrame {
                     v.getPreco(),
                     v.getCombustivel()
             });
+
 
             painelPrincipal.add(tabelaScroll, BorderLayout.CENTER);
             painelPrincipal.revalidate();

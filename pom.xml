@@ -56,6 +56,15 @@
             <version>1.2.11</version>
         </dependency>
 
+        
+        <dependency>
+            <groupId>com.github.lgooddatepicker</groupId>
+            <artifactId>LGoodDatePicker</artifactId>
+            <version>11.2.1</version>
+        </dependency>
+        
+
+
         <!-- Conector de logging do Java Util Logging (JUL) para SLF4J -->
         <dependency>
             <groupId>org.slf4j</groupId>
