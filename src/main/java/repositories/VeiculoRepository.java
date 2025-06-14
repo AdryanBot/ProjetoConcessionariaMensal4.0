@@ -53,4 +53,5 @@ public class VeiculoRepository {
         em.close(); // Fecha o EntityManager após a consulta
         return count; // Retorna o número total de veículos
     }
+
 }

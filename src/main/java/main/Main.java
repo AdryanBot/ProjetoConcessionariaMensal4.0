@@ -189,8 +189,8 @@ public class Main {
                 }
 
                 // Exibe marcas disponíveis para o tipo escolhido
-                System.out.println("Buscando marcas para " + tipoVeiculo + "...");
-                fipe.mostrarMarcas(tipoVeiculo);
+                //System.out.println("Buscando marcas para " + tipoVeiculo + "...");
+                //fipe.mostrarMarcas(tipoVeiculo);
 
                 System.out.println("Digite o Id da marca desejada:");
                 IdMarca = scanner.nextInt();
@@ -207,15 +207,15 @@ public class Main {
                 AnoECombs = Ano + "-" + Combustivel;
 
                 // Mostra os modelos disponíveis com base na marca e ano
-                fipe.modelosPorMarca(tipoVeiculo, IdMarca, AnoECombs);
+                //fipe.modelosPorMarca(tipoVeiculo, IdMarca, AnoECombs);
 
                 System.out.println("Digite o código do modelo desejado:");
                 int IdModelo = scanner.nextInt();
                 scanner.nextLine();
 
                 // Mostra os detalhes do veículo escolhido
-                fipe.detalhesVeiculo(tipoVeiculo, IdMarca, IdModelo, AnoECombs);
-                break;
+                //fipe.detalhesVeiculo(tipoVeiculo, IdMarca, IdModelo, AnoECombs);
+                //break;
 
             case 2:
                 cadastros.removerVeiculo(); // Remove veículo cadastrado
