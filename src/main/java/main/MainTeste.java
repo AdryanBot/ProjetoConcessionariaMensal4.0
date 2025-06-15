@@ -20,8 +20,10 @@ import controller.Cadastro;
 import entities.Cliente;
 import entities.Veiculo;
 import entities.Vendas;
+import jakarta.persistence.EntityManager;
 import repositories.*;
 import services.*;
+import utils.JPAUtil;
 import main.TabelaUtils;
 
 import org.hibernate.Session;
@@ -168,6 +170,115 @@ public class MainTeste extends JFrame {
         painelPrincipal.setBounds(220, 0, 860, 720);
         painelPrincipal.setName("painelPrincipal");  // damos nome para recuperar depois
         add(painelPrincipal);
+
+        btnNovaVenda.addActionListener(e ->{
+            painelPrincipal.removeAll();
+            painelPrincipal.setLayout(new BorderLayout());
+
+            JPanel painelCarros = new JPanel();
+            List<Veiculo> veiculos = veiculoServ.listarTodos();
+            String[] colunas = {"ID", "Tipo", "Modelo", "Marca", "Ano", "Preço", "Combustível"};
+
+            JScrollPane tabelaScrollCarros = TabelaUtils.gerarTabela(colunas, veiculos, v -> new Object[]{
+                    v.getId(),
+                    v.getVeiculoTipo() == 1 ? "Carro" : v.getVeiculoTipo() == 2 ? "Moto" : "Caminhão",
+                    v.getModelo(),
+                    v.getMarca(),
+                    v.getAno(),
+                    v.getPreco(),
+                    v.getCombustivel()
+            });
+            painelCarros.add(tabelaScrollCarros);
+
+            JPanel painelClientes = new JPanel();
+            List<Cliente> clientes = clienteServ.listarTodos();
+            String[] colunasC = {"ID", "Nome", "CPF", "Nascimento"};
+
+            JScrollPane tabelaScrollClientes = TabelaUtils.gerarTabela(colunasC, clientes, c -> new Object[]{
+                    c.getId(),
+                    c.getNome(),
+                    c.getCpf(),
+                    c.getDateB()
+            });
+            painelClientes.add(tabelaScrollClientes);
+
+            JPanel seleçãoParaVenda = new JPanel();
+
+            JComboBox<Long> seleçãoCarros = new JComboBox<>();
+            for (Veiculo veiculo : veiculos) {
+                seleçãoCarros.addItem(veiculo.getId());
+            }
+
+            JComboBox<Long> seleçãoClientes = new JComboBox<>();
+            for (Cliente cliente : clientes) {
+                seleçãoClientes.addItem(cliente.getId());
+            }
+
+            JButton btnRealizarVenda = new JButton("Realizar Venda");
+
+            btnRealizarVenda.addActionListener(ev ->{
+                long idCliente = (long) seleçãoClientes.getSelectedItem();
+                long idVeiculo = (long) seleçãoCarros.getSelectedItem();
+
+                EntityManager em = JPAUtil.getEntityManager();
+
+            try {
+                Cliente cliente = em.find(Cliente.class, idCliente);
+                Veiculo veiculo = em.find(Veiculo.class, idVeiculo);
+
+                if (cliente == null || veiculo == null) {
+                    JOptionPane.showMessageDialog(this, "Cliente ou veículo não encontrado.");
+                    return;
+                }
+
+                // Cria objeto de venda e preenche os dados
+                Vendas venda = new Vendas();
+                venda.setCliente(cliente);
+                venda.setVeiculo(veiculo);
+                venda.setModeloVeiculo(veiculo.getModelo());
+                venda.setMarcaVeiculo(veiculo.getMarca());
+                venda.setPrecoVeiculo(veiculo.getPreco());
+                venda.setNomeCliente(cliente.getNome());
+
+                // Persiste no banco
+                em.getTransaction().begin();
+                em.persist(venda);
+                em.getTransaction().commit();
+
+                JOptionPane.showMessageDialog(this, "Venda registrada com sucesso!");
+                
+
+            } catch (Exception ev1) {
+                JOptionPane.showMessageDialog(this, "Erro ao registrar venda: " + ev1.getMessage());
+                if (em.getTransaction().isActive()) {
+                    em.getTransaction().rollback();
+                }
+            } finally {
+                em.close();
+            }
+                });
+
+            seleçãoParaVenda.add(seleçãoCarros);
+            seleçãoParaVenda.add(seleçãoClientes);
+            seleçãoParaVenda.add(btnRealizarVenda);
+
+            JSplitPane splitPaneTabelas = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+            splitPaneTabelas.setTopComponent(painelCarros);
+            splitPaneTabelas.setBottomComponent(painelClientes);
+            splitPaneTabelas.setResizeWeight(0.5);
+            splitPaneTabelas.setDividerLocation(200);
+
+            JSplitPane splitPaneMaior = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+            splitPaneMaior.setTopComponent(splitPaneTabelas);
+            splitPaneMaior.setBottomComponent(seleçãoParaVenda);
+            splitPaneMaior.setResizeWeight(0.5);
+            splitPaneMaior.setDividerLocation(400);
+            
+            painelPrincipal.add(splitPaneMaior, BorderLayout.NORTH);
+
+            painelPrincipal.revalidate();
+            painelPrincipal.repaint();
+        });
 
         btnvendasRealizadas.addActionListener(e -> {
             painelPrincipal.removeAll();
