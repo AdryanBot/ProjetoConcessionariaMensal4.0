@@ -417,6 +417,89 @@ public class MainTeste extends JFrame {
             painelPrincipal.repaint();
         });
 
+        btnAddCliente.addActionListener(e ->{
+            painelPrincipal.removeAll();
+            painelPrincipal.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+            JPanel painelCadastroCliente = new JPanel();
+            painelCadastroCliente.setLayout(new BoxLayout(painelCadastroCliente, BoxLayout.Y_AXIS));
+            painelCadastroCliente.setBackground(Color.WHITE);
+            
+            JPanel linhaNome = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JLabel lblnome = new JLabel("Nome:");
+            lblnome.setPreferredSize(new Dimension(130, 25));
+            JTextField nomeCliente = new JTextField(20);
+            nomeCliente.setPreferredSize(new Dimension(300, 30));
+            linhaNome.add(lblnome);
+            linhaNome.add(nomeCliente);
+
+            JPanel linhaCpf = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JLabel lblcpf = new JLabel("CPF:");
+            lblcpf.setPreferredSize(new Dimension(130, 25));
+            JTextField cpfCliente = new JTextField(20);
+            cpfCliente.setPreferredSize(new Dimension(300, 30));
+            linhaCpf.add(lblcpf);
+            linhaCpf.add(cpfCliente);
+
+            JPanel linhaNascimento = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JLabel lblnascimento = new JLabel("Nascimento:");
+            lblnascimento.setPreferredSize(new Dimension(130, 25));
+            JTextField nascimentoCliente = new JTextField(20);
+            nascimentoCliente.setPreferredSize(new Dimension(300, 30));
+            linhaNascimento.add(lblnascimento);
+            linhaNascimento.add(nascimentoCliente);
+
+            JButton btnCadastrarCliente = new JButton("Cadastrar Cliente");
+            btnCadastrarCliente.setPreferredSize(new Dimension(200, 40));
+            btnCadastrarCliente.setAlignmentX(Component.CENTER_ALIGNMENT);
+            
+            linhaNome.setBackground(Color.WHITE);
+            linhaCpf.setBackground(Color.WHITE);
+            linhaNascimento.setBackground(Color.WHITE);
+
+            Font fonteLabel = new Font("Arial", Font.PLAIN, 20);
+            Font fonteCampos = new Font("Arial", Font.PLAIN, 16);
+            Font fonteBotoes = new Font("Arial", Font.BOLD, 16);
+
+            lblnome.setFont(fonteLabel);
+            lblcpf.setFont(fonteLabel);
+            lblnascimento.setFont(fonteLabel);
+            nomeCliente.setFont(fonteCampos);
+            cpfCliente.setFont(fonteCampos);
+            nascimentoCliente.setFont(fonteCampos);
+
+            btnCadastrarCliente.setFont(fonteBotoes);
+
+            btnCadastrarCliente.addActionListener(ev ->{
+                String nome = nomeCliente.getText();
+                String cpf = cpfCliente.getText();
+                String nascimento = nascimentoCliente.getText();
+
+                if(nome.isEmpty() || cpf.isEmpty() || nascimento.isEmpty()){
+                    JOptionPane.showMessageDialog(this, "Preencha todos os campos para cadastrar o cliente.");
+                    return;
+                }
+
+                Cliente cliente = new Cliente(nome, cpf, nascimento);
+                new ClienteRepository().salvar(cliente);
+                JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso!");
+            });
+
+            painelCadastroCliente.add(linhaNome);
+            painelCadastroCliente.add(Box.createVerticalStrut(15));
+            painelCadastroCliente.add(linhaCpf);
+            painelCadastroCliente.add(Box.createVerticalStrut(15));
+            painelCadastroCliente.add(linhaNascimento);
+            painelCadastroCliente.add(Box.createVerticalStrut(55));
+            painelCadastroCliente.add(btnCadastrarCliente);
+
+            painelPrincipal.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 200));
+            painelPrincipal.add(painelCadastroCliente, BorderLayout.CENTER);
+
+            painelPrincipal.revalidate();
+            painelPrincipal.repaint();
+        });
+
         setVisible(true);
     }
 
