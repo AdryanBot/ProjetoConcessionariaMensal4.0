@@ -48,6 +48,9 @@ public class VendasService {
             }
         }
     }
+    public List<Vendas> buscarVendasPorClientes(Long idCliente) {
+        return vendaRepo.buscarVendasComVeiculoPorCliente(idCliente);
+    }
 
     // Metodo para pedir o ID do cliente e exibir suas vendas
     public void pedirIdCliente() {

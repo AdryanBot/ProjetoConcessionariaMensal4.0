@@ -389,7 +389,38 @@ public class MainTeste extends JFrame {
                     c.getDateB()
             });
 
-            painelPrincipal.add(tabelaScroll, BorderLayout.CENTER);
+            JPanel vendasPorCliente = new JPanel();
+
+            JComboBox<Long> seleçãoClientes = new JComboBox<>();
+            for (Cliente cliente : clientes) {
+                seleçãoClientes.addItem(cliente.getId());
+            }
+            JButton buscarVendas = new JButton("Buscar vendas realizadas pelo cliente");
+
+            buscarVendas.addActionListener(ev ->{
+                long idCliente = (long) seleçãoClientes.getSelectedItem();
+
+                List<Vendas> vendas = vendasServ.buscarVendasPorClientes(idCliente);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+                String[] colunas1 = {"ID da Venda", "Modelo do Veiculo", "Preço", "Data"};
+
+                JScrollPane tabelaScroll1 = TabelaUtils.gerarTabela(colunas1, vendas, v -> new Object[]{
+                            v.getId(),
+                            v.getVeiculo().getModelo(),
+                            v.getVeiculo().getPreco(),
+                            v.getDataVenda().format(formatter)
+                    }); 
+                vendasPorCliente.removeAll();
+                vendasPorCliente.add(tabelaScroll1);
+                vendasPorCliente.revalidate();
+                vendasPorCliente.repaint();
+            });
+
+            vendasPorCliente.add(seleçãoClientes);
+            vendasPorCliente.add(buscarVendas);
+
+            painelPrincipal.add(tabelaScroll, BorderLayout.NORTH);
+            painelPrincipal.add(vendasPorCliente, BorderLayout.CENTER);
             painelPrincipal.revalidate();
             painelPrincipal.repaint();
         });
