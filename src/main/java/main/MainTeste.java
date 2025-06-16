@@ -500,6 +500,60 @@ public class MainTeste extends JFrame {
             painelPrincipal.repaint();
         });
 
+        btnRemoverCliente.addActionListener(e ->{
+            painelPrincipal.removeAll();
+            painelPrincipal.setLayout(new BorderLayout());
+
+            List<Cliente> clientes = clienteServ.listarTodos();
+            String[] colunas = {"ID", "Nome", "CPF", "Nascimento"};
+
+            JScrollPane tabelaScroll = TabelaUtils.gerarTabela(colunas, clientes, c -> new Object[]{
+                    c.getId(),
+                    c.getNome(),
+                    c.getCpf(),
+                    c.getDateB()
+            });
+
+            JPanel painelRemoverCliente = new JPanel();
+
+            JComboBox<Long> seleçãoClientes = new JComboBox<>();
+            for (Cliente cliente : clientes) {
+                seleçãoClientes.addItem(cliente.getId());
+            }
+            JButton btnRemover = new JButton("Remover Cliente");
+
+            painelRemoverCliente.add(new JLabel("Selecione o cliente para remover:"));
+            painelRemoverCliente.add(seleçãoClientes);
+            painelRemoverCliente.add(btnRemover);
+
+            btnRemover.addActionListener(ev ->{
+                Long id = (Long) seleçãoClientes.getSelectedItem();
+                EntityManager em = JPAUtil.getEntityManager();
+                try {
+                    Cliente cliente = em.find(Cliente.class, id);
+
+                    if (cliente != null) {
+                        em.getTransaction().begin();
+                        em.remove(cliente);
+                        em.getTransaction().commit();
+                        JOptionPane.showMessageDialog(this,"Cliente removido com sucesso!");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Cliente com ID " + id + " não encontrado.");
+                        }
+
+                        em.close();
+
+                    } catch (Exception ev1) {
+                        JOptionPane.showMessageDialog(this,"Erro ao remover Cliente: " + ev1.getMessage());
+                    }
+            });
+
+            painelPrincipal.add(tabelaScroll, BorderLayout.NORTH);
+            painelPrincipal.add(painelRemoverCliente, BorderLayout.CENTER);
+            painelPrincipal.revalidate();
+            painelPrincipal.repaint();
+        });
+
         setVisible(true);
     }
 
