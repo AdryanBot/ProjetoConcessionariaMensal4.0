@@ -84,6 +84,10 @@ public class VendasService {
         }
     }
 
+    public List<Vendas> buscarClientePorVeiculo(Long idVeiculo) {
+        return vendaRepo.buscarVendasPorVeiculo(idVeiculo);
+    }
+
     // Metodo para pedir o ID do veículo e exibir os clientes que compraram ele
     public void pedirIdVeiculo() {
         Scanner scanner = new Scanner(System.in);
