@@ -51,7 +51,7 @@ public class MainTeste extends JFrame {
 
     public MainTeste() {
         setTitle("Gestão de Concessionária");
-        setSize(1080, 720);
+        setSize(1080, 759);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(null);
@@ -744,10 +744,67 @@ public class MainTeste extends JFrame {
             painelPrincipal.repaint();
         });
 
+        btnRemoverVeiculo.addActionListener(e ->{
+            painelPrincipal.removeAll();
+            painelPrincipal.setLayout(new BorderLayout());
+
+            List<Veiculo> veiculos = veiculoServ.listarTodos();
+            String[] colunas = {"ID", "Tipo", "Modelo", "Marca", "Ano", "Preço", "Combustível"};
+
+            JScrollPane tabelaScroll = TabelaUtils.gerarTabela(colunas, veiculos, v -> new Object[]{
+                    v.getId(),
+                    v.getVeiculoTipo() == 1 ? "Carro" : v.getVeiculoTipo() == 2 ? "Moto" : "Caminhão",
+                    v.getModelo(),
+                    v.getMarca(),
+                    v.getAno(),
+                    v.getPreco(),
+                    v.getCombustivel()
+            });
+
+            JPanel painelRemoverVeiculo = new JPanel();
+
+            JComboBox<Long> seleçãoCarros = new JComboBox<>();
+            for (Veiculo veiculo : veiculos) {
+                seleçãoCarros.addItem(veiculo.getId());
+            }
+            JButton btnRemover = new JButton("Remover Veiculo");
+
+            painelRemoverVeiculo.add(new JLabel("Selecione o veiculo para remover:"));
+            painelRemoverVeiculo.add(seleçãoCarros);
+            painelRemoverVeiculo.add(btnRemover);
+
+            btnRemover.addActionListener(ev ->{
+                Long id = (Long) seleçãoCarros.getSelectedItem();
+                EntityManager em = JPAUtil.getEntityManager();
+                try {
+                    Veiculo veiculo = em.find(Veiculo.class, id);
+
+                    if (veiculo != null) {
+                        em.getTransaction().begin();
+                        em.remove(veiculo);
+                        em.getTransaction().commit();
+                        JOptionPane.showMessageDialog(this,"Veiculo removido com sucesso!");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Veiculo com ID " + id + " não encontrado.");
+                    }
+
+                    em.close();
+
+                } catch (Exception ev1) {
+                    JOptionPane.showMessageDialog(this,"Erro ao remover Veiculo: " + ev1.getMessage());
+                }
+            });
+
+            painelPrincipal.add(tabelaScroll, BorderLayout.NORTH);
+            painelPrincipal.add(painelRemoverVeiculo, BorderLayout.CENTER);
+            painelPrincipal.revalidate();
+            painelPrincipal.repaint();
+        });
+
         setVisible(true);
     }
 
-    // Método auxiliar para recuperar painelPrincipal, que criamos com setName
+    // Metodo auxiliar para recuperar painelPrincipal, que criamos com setName
     private JPanel getPainelPrincipal() {
         for (Component comp : getContentPane().getComponents()) {
             if (comp instanceof JPanel && "painelPrincipal".equals(comp.getName())) {

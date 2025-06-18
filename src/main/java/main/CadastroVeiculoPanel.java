@@ -3,6 +3,7 @@ package main;
 import api.FipeApiClient;
 import entities.FipeMarca;
 import entities.FipeModelo;
+import controller.Cadastro;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -24,6 +25,7 @@ public class CadastroVeiculoPanel extends JPanel {
     private DefaultTableModel modeloModelos;
 
     private FipeApiClient apiClient = new FipeApiClient();
+    Cadastro cadastro = new Cadastro();
 
     public CadastroVeiculoPanel() {
         setLayout(new BorderLayout());
@@ -33,7 +35,7 @@ public class CadastroVeiculoPanel extends JPanel {
         inputPanel.setLayout(new GridLayout(3, 2));
 
         inputPanel.add(new JLabel("Tipo de Veículo:"));
-        String[] tipos = {"1 - Carro", "2 - Moto", "3 - Caminhão"};
+        String[] tipos = {"Carro", "Moto", "Caminhão"};
         tipoComboBox = new JComboBox<>(tipos);
         inputPanel.add(tipoComboBox);
 
@@ -63,6 +65,11 @@ public class CadastroVeiculoPanel extends JPanel {
         tabelasPanel.add(scrollModelos);
         add(tabelasPanel, BorderLayout.CENTER);
 
+        // Botão Cadastrar Veículo
+        JButton cadastrarVeiculoBtn = new JButton("Cadastrar Veículo");
+        cadastrarVeiculoBtn.setEnabled(false);
+        add(cadastrarVeiculoBtn, BorderLayout.SOUTH);
+
         // Ações
         buscarMarcasBtn.addActionListener(e -> carregarMarcas());
 
@@ -74,6 +81,43 @@ public class CadastroVeiculoPanel extends JPanel {
                     carregarModelos(codigoMarca);
                 }
             }
+        });
+
+        tabelaModelos.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                if (tabelaModelos.getSelectedRow() >= 0) {
+                    cadastrarVeiculoBtn.setEnabled(true);
+                }
+            }
+        });
+
+        cadastrarVeiculoBtn.addActionListener(e -> {
+            int rowModelo = tabelaModelos.getSelectedRow();
+            int rowMarca = tabelaMarcas.getSelectedRow();
+
+            if (rowModelo < 0 || rowMarca < 0) {
+                JOptionPane.showMessageDialog(this, "Selecione uma marca e um modelo.");
+                return;
+            }
+
+            String tipoSelecionado = tipoComboBox.getSelectedItem().toString(); // Carro, Moto, Caminhão
+            String tipo = tipoSelecionado.equals("Carro") ? "cars"
+                    : tipoSelecionado.equals("Moto") ? "motorcycles"
+                    : "trucks";
+
+            String marca = modeloMarcas.getValueAt(rowMarca, 1).toString();
+            String modelo = modeloModelos.getValueAt(rowModelo, 1).toString();
+            String anoCombs = anoCombsField.getText().trim();
+            String codigoFipe = modeloModelos.getValueAt(rowModelo, 0).toString();
+
+            // Simulação de valores genéricos
+            String preco = "R$ 99.999";
+            String combustivel = "Gasolina"; // pode ser parseado de anoCombs
+            String acronComb = "G"; // pode vir de regra do combustível
+            String mesRef = "junho de 2025";
+
+            cadastro.adicionarVeiculo(tipo, marca, modelo, anoCombs, codigoFipe, preco, combustivel, acronComb, mesRef);
+            JOptionPane.showMessageDialog(this, "Veículo cadastrado com sucesso!");
         });
     }
 
