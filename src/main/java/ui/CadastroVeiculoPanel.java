@@ -1,4 +1,4 @@
-package main;
+package ui;
 
 import api.FipeApiClient;
 import entities.FipeMarca;
@@ -100,7 +100,9 @@ public class CadastroVeiculoPanel extends JPanel {
                 return;
             }
 
-            String tipoSelecionado = tipoComboBox.getSelectedItem().toString(); // Carro, Moto, Caminhão
+
+
+            String tipoSelecionado = tipoComboBox.getSelectedItem().toString();
             String tipo = tipoSelecionado.equals("Carro") ? "cars"
                     : tipoSelecionado.equals("Moto") ? "motorcycles"
                     : "trucks";
@@ -110,11 +112,11 @@ public class CadastroVeiculoPanel extends JPanel {
             String anoCombs = anoCombsField.getText().trim();
             String codigoFipe = modeloModelos.getValueAt(rowModelo, 0).toString();
 
-            // Simulação de valores genéricos
-            String preco = "R$ 99.999";
-            String combustivel = "Gasolina"; // pode ser parseado de anoCombs
-            String acronComb = "G"; // pode vir de regra do combustível
-            String mesRef = "junho de 2025";
+            // Use placeholder values since we don't have full FIPE details
+            String preco = "Consultar FIPE";
+            String combustivel = "Flex";
+            String acronComb = anoCombs;
+            String mesRef = "Dezembro/2024";
 
             cadastro.adicionarVeiculo(tipo, marca, modelo, anoCombs, codigoFipe, preco, combustivel, acronComb, mesRef);
             JOptionPane.showMessageDialog(this, "Veículo cadastrado com sucesso!");
