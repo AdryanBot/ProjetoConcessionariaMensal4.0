@@ -308,10 +308,7 @@ public class Cadastro {
     }
 
     // Mostra vendas feitas por um cliente específico
-    public void mostrarVendasPorCliente() {
-        VendasService vendasService = new VendasService();
-        vendasService.pedirIdCliente();
-    }
+
 
     // Mostra clientes que compraram um veículo específico
     public void mostrarClientesPorVeiculo() {

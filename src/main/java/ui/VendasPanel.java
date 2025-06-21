@@ -77,19 +77,24 @@ public class VendasPanel {
         JPanel seleçãoParaVenda = new JPanel();
 
         JLabel textCarro = new JLabel("Carro:");
-        JComboBox<Long> seleçãoCarros = new JComboBox<>();
+        JComboBox<String> seleçãoCarros = new JComboBox<>();
+        seleçãoCarros.addItem("Selecione um veículo...");
         for (Veiculo veiculo : veiculos) {
-            seleçãoCarros.addItem(veiculo.getId());
+            String tipoVeiculo = veiculo.getVeiculoTipo() == 1 ? "Carro" : 
+                               veiculo.getVeiculoTipo() == 2 ? "Moto" : "Caminhão";
+            seleçãoCarros.addItem(String.format("%s %s (%s) - %s", 
+                veiculo.getMarca(), veiculo.getModelo(), veiculo.getAno(), tipoVeiculo));
         }
 
         JLabel textCliente = new JLabel("Cliente:");
-        JComboBox<Long> seleçãoClientes = new JComboBox<>();
+        JComboBox<String> seleçãoClientes = new JComboBox<>();
+        seleçãoClientes.addItem("Selecione um cliente...");
         for (Cliente cliente : clientes) {
-            seleçãoClientes.addItem(cliente.getId());
+            seleçãoClientes.addItem(String.format("%s - %s", cliente.getNome(), cliente.getCpf()));
         }
 
         JButton btnRealizarVenda = new JButton("Realizar Venda");
-        btnRealizarVenda.addActionListener(e -> realizarVenda(seleçãoClientes, seleçãoCarros));
+        btnRealizarVenda.addActionListener(e -> realizarVenda(seleçãoClientes, seleçãoCarros, veiculos, clientes));
 
         seleçãoParaVenda.add(textCarro);
         seleçãoParaVenda.add(seleçãoCarros);
@@ -100,21 +105,22 @@ public class VendasPanel {
         return seleçãoParaVenda;
     }
 
-    private void realizarVenda(JComboBox<Long> seleçãoClientes, JComboBox<Long> seleçãoCarros) {
-        long idCliente = (long) seleçãoClientes.getSelectedItem();
-        long idVeiculo = (long) seleçãoCarros.getSelectedItem();
+    private void realizarVenda(JComboBox<String> seleçãoClientes, JComboBox<String> seleçãoCarros, 
+                              List<Veiculo> veiculos, List<Cliente> clientes) {
+        int clienteIndex = seleçãoClientes.getSelectedIndex();
+        int veiculoIndex = seleçãoCarros.getSelectedIndex();
+        
+        if (clienteIndex == 0 || veiculoIndex == 0) {
+            JOptionPane.showMessageDialog(null, "Por favor, selecione um cliente e um veículo!");
+            return;
+        }
+        
+        Cliente cliente = clientes.get(clienteIndex - 1);
+        Veiculo veiculo = veiculos.get(veiculoIndex - 1);
 
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
-            Cliente cliente = em.find(Cliente.class, idCliente);
-            Veiculo veiculo = em.find(Veiculo.class, idVeiculo);
-
-            if (cliente == null || veiculo == null) {
-                JOptionPane.showMessageDialog(null, "Cliente ou veículo não encontrado.");
-                return;
-            }
-
             Vendas venda = new Vendas();
             venda.setCliente(cliente);
             venda.setVeiculo(veiculo);
@@ -157,14 +163,22 @@ public class VendasPanel {
 
         JPanel painelDatas = createDateFilterPanel(formatter);
         JPanel resultadoFiltro = new JPanel(new BorderLayout());
+        
+        JLabel countLabel = new JLabel("Total de Vendas: " + vendas.size());
+        countLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        countLabel.setFont(countLabel.getFont().deriveFont(Font.BOLD, 14f));
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitPane.setTopComponent(tabelaScroll);
         splitPane.setBottomComponent(resultadoFiltro);
         splitPane.setResizeWeight(0.5);
         splitPane.setDividerLocation(250);
+        
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(countLabel, BorderLayout.NORTH);
+        topPanel.add(painelDatas, BorderLayout.CENTER);
 
-        painelPrincipal.add(painelDatas, BorderLayout.NORTH);
+        painelPrincipal.add(topPanel, BorderLayout.NORTH);
         painelPrincipal.add(splitPane, BorderLayout.CENTER);
         painelPrincipal.revalidate();
         painelPrincipal.repaint();

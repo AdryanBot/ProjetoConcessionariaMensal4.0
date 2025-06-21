@@ -33,11 +33,16 @@ public class VeiculosPanel {
         });
 
         JPanel filtros = createVehicleFiltersPanel(veiculos);
+        
+        JLabel countLabel = new JLabel("Total de Veículos: " + veiculos.size());
+        countLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        countLabel.setFont(countLabel.getFont().deriveFont(Font.BOLD, 14f));
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         splitPane.setTopComponent(tabelaScroll);
         splitPane.setBottomComponent(filtros);
 
+        painelPrincipal.add(countLabel, BorderLayout.NORTH);
         painelPrincipal.add(splitPane, BorderLayout.CENTER);
         painelPrincipal.revalidate();
         painelPrincipal.repaint();
@@ -115,21 +120,39 @@ public class VeiculosPanel {
 
     private void showPriceUpdatePanel(JPanel filtros, List<Veiculo> veiculos) {
         JPanel inputs = new JPanel();
-        JLabel idCarro = new JLabel("ID do carro");
-        JComboBox<Long> seleçãoCarros = new JComboBox<>();
+        JLabel labelVeiculo = new JLabel("Selecione o veículo");
+        JComboBox<String> seleçãoCarros = new JComboBox<>();
         
+        // Adiciona uma opção padrão
+        seleçãoCarros.addItem("Selecione um veículo...");
+        
+        // Adiciona os veículos com formato: "Marca Modelo (Ano) - Tipo"
         for (Veiculo veiculo : veiculos) {
-            seleçãoCarros.addItem(veiculo.getId());
+            String tipoVeiculo = veiculo.getVeiculoTipo() == 1 ? "Carro" : 
+                               veiculo.getVeiculoTipo() == 2 ? "Moto" : "Caminhão";
+            String displayText = String.format("%s %s (%s) - %s", 
+                veiculo.getMarca(), 
+                veiculo.getModelo(), 
+                veiculo.getAno(), 
+                tipoVeiculo);
+            seleçãoCarros.addItem(displayText);
         }
         
         JButton procurar = new JButton("Procurar");
-        inputs.add(idCarro);
+        inputs.add(labelVeiculo);
         inputs.add(seleçãoCarros);
         inputs.add(procurar);
 
         procurar.addActionListener(e -> {
-            Long id = (Long) seleçãoCarros.getSelectedItem();
-            Veiculo veiculo = veiculoServ.buscarPorId(id);
+            int selectedIndex = seleçãoCarros.getSelectedIndex();
+            
+            if (selectedIndex == 0) {
+                JOptionPane.showMessageDialog(null, "Por favor, selecione um veículo!");
+                return;
+            }
+            
+            // O índice -1 porque o primeiro item é "Selecione um veículo..."
+            Veiculo veiculo = veiculos.get(selectedIndex - 1);
 
             if (veiculo != null) {
                 showPriceUpdateForm(filtros, veiculo);
@@ -178,20 +201,40 @@ public class VeiculosPanel {
 
     private void showClientsByVehiclePanel(JPanel filtros, List<Veiculo> veiculos) {
         JPanel inputs = new JPanel();
-        JLabel idCarro = new JLabel("ID do carro");
-        JComboBox<Long> seleçãoCarros = new JComboBox<>();
+        JLabel labelVeiculo = new JLabel("Selecione o veículo");
+        JComboBox<String> seleçãoCarros = new JComboBox<>();
         
+        // Adiciona uma opção padrão
+        seleçãoCarros.addItem("Selecione um veículo...");
+        
+        // Adiciona os veículos com formato: "Marca Modelo (Ano) - Tipo"
         for (Veiculo veiculo : veiculos) {
-            seleçãoCarros.addItem(veiculo.getId());
+            String tipoVeiculo = veiculo.getVeiculoTipo() == 1 ? "Carro" : 
+                               veiculo.getVeiculoTipo() == 2 ? "Moto" : "Caminhão";
+            String displayText = String.format("%s %s (%s) - %s", 
+                veiculo.getMarca(), 
+                veiculo.getModelo(), 
+                veiculo.getAno(), 
+                tipoVeiculo);
+            seleçãoCarros.addItem(displayText);
         }
         
         JButton procurar = new JButton("Procurar");
-        inputs.add(idCarro);
+        inputs.add(labelVeiculo);
         inputs.add(seleçãoCarros);
         inputs.add(procurar);
 
         procurar.addActionListener(e -> {
-            Long id = (Long) seleçãoCarros.getSelectedItem();
+            int selectedIndex = seleçãoCarros.getSelectedIndex();
+            
+            if (selectedIndex == 0) {
+                JOptionPane.showMessageDialog(null, "Por favor, selecione um veículo!");
+                return;
+            }
+            
+            // O índice -1 porque o primeiro item é "Selecione um veículo..."
+            Veiculo veiculo = veiculos.get(selectedIndex - 1);
+            Long id = veiculo.getId();
 
             List<Vendas> vendas = vendasServ.buscarClientePorVeiculo(id);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");

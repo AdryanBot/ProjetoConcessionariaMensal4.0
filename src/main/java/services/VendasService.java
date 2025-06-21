@@ -31,39 +31,13 @@ public class VendasService {
     }
 
     // Metodo para mostrar as vendas de um cliente específico
-    public void mostrarVendasPorCliente(Long idCliente) {
-        // Chama o repositório para buscar todas as vendas associadas a um cliente
-        List<Vendas> vendas = vendaRepo.buscarVendasComVeiculoPorCliente(idCliente);
-
-        // Verifica se há vendas e exibe os detalhes
-        if (vendas.isEmpty()) {
-            System.out.println("Nenhuma venda encontrada para o cliente com ID: " + idCliente);
-        } else {
-            for (Vendas v : vendas) {
-                System.out.println("--------------------------------------------------------");
-                System.out.println("ID da Venda: " + v.getId());
-                System.out.println("Modelo do Veículo: " + v.getVeiculo().getModelo());
-                System.out.println("Preço do Veículo: " + v.getVeiculo().getPreco());
-                System.out.println("Data da Venda: " + v.getDataVenda());
-            }
-        }
-    }
-    public List<Vendas> buscarVendasPorClientes(Long idCliente) {
+    
+    public List<Vendas> buscarVendasPorClientes(String idCliente) {
         return vendaRepo.buscarVendasComVeiculoPorCliente(idCliente);
     }
 
     // Metodo para pedir o ID do cliente e exibir suas vendas
-    public void pedirIdCliente() {
-        Scanner scanner = new Scanner(System.in);
-
-        // Solicita o ID do cliente
-        System.out.print("Digite o ID do cliente para visualizar suas vendas: ");
-        Long idCliente = scanner.nextLong();
-        scanner.nextLine();  // Limpa o buffer de linha
-
-        // Chama o metodo para exibir as vendas desse cliente
-        mostrarVendasPorCliente(idCliente);
-    }
+   
 
     // Metodo para mostrar os clientes que compraram um determinado veículo
     public void mostrarClientesPorVeiculo(Long idVeiculo) {

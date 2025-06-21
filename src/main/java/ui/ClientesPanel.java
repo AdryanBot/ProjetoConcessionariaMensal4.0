@@ -28,8 +28,16 @@ public class ClientesPanel {
         });
 
         JPanel vendasPorCliente = createClienteSalesPanel(clientes);
+        
+        JLabel countLabel = new JLabel("Total de Clientes: " + clientes.size());
+        countLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        countLabel.setFont(countLabel.getFont().deriveFont(Font.BOLD, 14f));
 
-        painelPrincipal.add(tabelaScroll, BorderLayout.NORTH);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(countLabel, BorderLayout.NORTH);
+        topPanel.add(tabelaScroll, BorderLayout.CENTER);
+
+        painelPrincipal.add(topPanel, BorderLayout.NORTH);
         painelPrincipal.add(vendasPorCliente, BorderLayout.CENTER);
         painelPrincipal.revalidate();
         painelPrincipal.repaint();
@@ -38,15 +46,15 @@ public class ClientesPanel {
     private JPanel createClienteSalesPanel(List<Cliente> clientes) {
         JPanel vendasPorCliente = new JPanel();
 
-        JComboBox<Long> seleçãoClientes = new JComboBox<>();
+        JComboBox<String> seleçãoClientes = new JComboBox<>();
         for (Cliente cliente : clientes) {
-            seleçãoClientes.addItem(cliente.getId());
+            seleçãoClientes.addItem(cliente.getNome());
         }
         
         JButton buscarVendas = new JButton("Buscar vendas realizadas pelo cliente");
 
         buscarVendas.addActionListener(e -> {
-            long idCliente = (long) seleçãoClientes.getSelectedItem();
+            String idCliente = (String) seleçãoClientes.getSelectedItem();
 
             List<Vendas> vendas = vendasServ.buscarVendasPorClientes(idCliente);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");

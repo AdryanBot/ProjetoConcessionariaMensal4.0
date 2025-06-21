@@ -29,9 +29,9 @@ public class VendasRepository {
     }
 
     // Metodo para buscar vendas de um cliente, incluindo os veículos
-    public List<Vendas> buscarVendasComVeiculoPorCliente(Long idCliente) {
+    public List<Vendas> buscarVendasComVeiculoPorCliente(String idCliente) {
         EntityManager em = JPAUtil.getEntityManager(); // Obtém uma instância do EntityManager
-        String jpql = "SELECT v FROM Vendas v JOIN v.veiculo veiculo WHERE v.cliente.id = :idCliente"; // Consulta para buscar vendas com veículos de um cliente específico
+        String jpql = "SELECT v FROM Vendas v JOIN v.veiculo veiculo WHERE v.cliente.nome = :idCliente"; // Consulta para buscar vendas com veículos de um cliente específico
         TypedQuery<Vendas> query = em.createQuery(jpql, Vendas.class);
         query.setParameter("idCliente", idCliente); // Define o parâmetro com o id do cliente
         List<Vendas> resultado = query.getResultList(); // Executa a consulta e retorna o resultado

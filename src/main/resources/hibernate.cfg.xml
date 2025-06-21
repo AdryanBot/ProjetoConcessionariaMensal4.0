@@ -5,7 +5,7 @@
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property> <!-- Driver JDBC para PostgreSQL -->
         <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/postgres</property> <!-- URL de conexão com o banco de dados -->
         <property name="hibernate.connection.username">postgres</property> <!-- Usuário para acessar o banco de dados -->
-        <property name="hibernate.connection.password">admin</property> <!-- Senha para acessar o banco de dados -->
+        <property name="hibernate.connection.password">0306</property> <!-- Senha para acessar o banco de dados -->
 
         <!-- Configuração do dialeto do Hibernate para PostgreSQL -->
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
