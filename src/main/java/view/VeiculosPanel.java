@@ -1,4 +1,4 @@
-package ui;
+package view;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,10 +20,9 @@ public class VeiculosPanel {
         painelPrincipal.setLayout(new BorderLayout());
 
         List<Veiculo> veiculos = veiculoServ.listarTodos();
-        String[] colunas = {"ID", "Tipo", "Modelo", "Marca", "Ano", "Preço", "Combustível"};
+        String[] colunas = {"Tipo", "Modelo", "Marca", "Ano", "Preço", "Combustível"};
 
         JScrollPane tabelaScroll = TabelaUtils.gerarTabela(colunas, veiculos, v -> new Object[]{
-                v.getId(),
                 v.getVeiculoTipo() == 1 ? "Carro" : v.getVeiculoTipo() == 2 ? "Moto" : "Caminhão",
                 v.getModelo(),
                 v.getMarca(),
@@ -93,10 +92,9 @@ public class VeiculosPanel {
             String nome = nomeCarro.getText();
             if (nome != null && !nome.isEmpty()) {
                 List<Veiculo> veiculosEncontrados = veiculoServ.buscarPorModelo(nome);
-                String[] colunas1 = {"ID", "Tipo", "Modelo", "Marca", "Ano", "Preço", "Combustível"};
+                String[] colunas1 = {"Tipo", "Modelo", "Marca", "Ano", "Preço", "Combustível"};
                 
                 JScrollPane tabelaScroll1 = TabelaUtils.gerarTabela(colunas1, veiculosEncontrados, v -> new Object[]{
-                        v.getId(),
                         v.getVeiculoTipo() == 1 ? "Carro" : v.getVeiculoTipo() == 2 ? "Moto" : "Caminhão",
                         v.getModelo(),
                         v.getMarca(),
@@ -238,10 +236,9 @@ public class VeiculosPanel {
 
             List<Vendas> vendas = vendasServ.buscarClientePorVeiculo(id);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-            String[] colunas1 = {"ID da Venda", "Nome do cliente", "CPF do cliente", "Data"};
+            String[] colunas1 = {"Nome do cliente", "CPF do cliente", "Data"};
 
             JScrollPane tabelaScroll1 = TabelaUtils.gerarTabela(colunas1, vendas, v -> new Object[]{
-                    v.getId(),
                     v.getCliente().getNome(),
                     v.getCliente().getCpf(),
                     v.getDataVenda().format(formatter)

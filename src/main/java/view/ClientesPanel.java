@@ -1,4 +1,4 @@
-package ui;
+package view;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,10 +18,9 @@ public class ClientesPanel {
         painelPrincipal.setLayout(new BorderLayout());
 
         List<Cliente> clientes = clienteServ.listarTodos();
-        String[] colunas = {"ID", "Nome", "CPF", "Nascimento"};
+        String[] colunas = {"Nome", "CPF", "Nascimento"};
 
         JScrollPane tabelaScroll = TabelaUtils.gerarTabela(colunas, clientes, c -> new Object[]{
-                c.getId(),
                 c.getNome(),
                 c.getCpf(),
                 c.getDateB()
@@ -58,10 +57,9 @@ public class ClientesPanel {
 
             List<Vendas> vendas = vendasServ.buscarVendasPorClientes(idCliente);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-            String[] colunas1 = {"ID da Venda", "Modelo do Veiculo", "Preço", "Data"};
+            String[] colunas1 = {"Modelo do Veiculo", "Preço", "Data"};
 
             JScrollPane tabelaScroll1 = TabelaUtils.gerarTabela(colunas1, vendas, v -> new Object[]{
-                    v.getId(),
                     v.getVeiculo().getModelo(),
                     v.getVeiculo().getPreco(),
                     v.getDataVenda().format(formatter)

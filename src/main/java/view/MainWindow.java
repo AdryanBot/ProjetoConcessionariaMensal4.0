@@ -1,4 +1,4 @@
-package ui;
+package view;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,6 +8,10 @@ import org.hibernate.cfg.Configuration;
 import java.util.logging.LogManager;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
+/**
+ * Janela principal do sistema de gestão de concessionária.
+ * Contém a sidebar de navegação e o painel principal de conteúdo.
+ */
 public class MainWindow extends JFrame {
     private JPanel painelPrincipal;
     private NavigationController navigationController;
@@ -18,26 +22,40 @@ public class MainWindow extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Configura as propriedades básicas da janela.
+     */
     private void initializeFrame() {
         setTitle("Gestão de Concessionária");
-        setSize(1080, 759);
+        setSize(1400, 900);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLayout(null);
+        setLayout(new BorderLayout());
+        setMinimumSize(new Dimension(1200, 800));
     }
 
+    /**
+     * Configura os componentes da interface.
+     */
     private void setupComponents() {
-        painelPrincipal = new JPanel();
+        painelPrincipal = new JPanel(new BorderLayout());
         painelPrincipal.setBackground(Color.WHITE);
-        painelPrincipal.setBounds(220, 0, 860, 720);
         painelPrincipal.setName("painelPrincipal");
-        add(painelPrincipal);
+        
+        // Adiciona mensagem inicial
+        JLabel mensagemInicial = new JLabel("Selecione uma opção ao lado", JLabel.CENTER);
+        mensagemInicial.setFont(new Font("Arial", Font.PLAIN, 24));
+        mensagemInicial.setForeground(Color.GRAY);
+        painelPrincipal.add(mensagemInicial, BorderLayout.CENTER);
 
         navigationController = new NavigationController(painelPrincipal);
         
         SidebarPanel sidebar = new SidebarPanel(navigationController);
-        sidebar.setBounds(0, 0, 220, 720);
-        add(sidebar);
+        sidebar.setPreferredSize(new Dimension(280, 0));
+        sidebar.setMinimumSize(new Dimension(280, 0));
+        
+        add(sidebar, BorderLayout.WEST);
+        add(painelPrincipal, BorderLayout.CENTER);
     }
 
     public static void main(String[] args) {

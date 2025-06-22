@@ -10,33 +10,21 @@ import java.util.List;
 
 public class ClienteService {
 
-    // Instância do repositório ClienteRepository para interação com o banco de dados
-    public static ClienteRepository clienteRepo = new ClienteRepository();
+    private final ClienteRepository clienteRepository;
 
-    // Metodo para listar todos os clientes do banco de dados
-    public List<Cliente> listarTodos() {
-        // Obtém o EntityManager para realizar operações no banco de dados
-        EntityManager em = JPAUtil.getEntityManager();
-        
-        // Cria uma consulta JPQL para selecionar todos os clientes
-        TypedQuery<Cliente> query = em.createQuery("FROM Cliente", Cliente.class);
-        
-        // Executa a consulta e retorna a lista de clientes
-        List<Cliente> cliente = query.getResultList();
-        
-        // Fecha o EntityManager após a operação
-        em.close();
-        
-        // Retorna a lista de clientes
-        return cliente;
+    public ClienteService() {
+        this.clienteRepository = new ClienteRepository();
     }
 
-    // Metodo para mostrar a quantidade total de clientes cadastrados
-    public void mostrarQtdCliente() {
-        // Chama o metodo para contar o número total de clientes no banco
-        Long total = clienteRepo.contarCliente();
-        
-        // Exibe o total de clientes na saída padrão (console)
-        System.out.println("Total de clientes cadastrados: " + total);
+    public List<Cliente> listarTodos() {
+        EntityManager em = JPAUtil.getEntityManager();
+        TypedQuery<Cliente> query = em.createQuery("FROM Cliente", Cliente.class);
+        List<Cliente> clientes = query.getResultList();
+        em.close();
+        return clientes;
+    }
+
+    public Long contarClientes() {
+        return clienteRepository.contarCliente();
     }
 }

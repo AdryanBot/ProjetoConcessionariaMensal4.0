@@ -2,27 +2,31 @@ package controller;
 
 import repositories.*;
 import services.*;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import jakarta.persistence.*;
-
 import entities.*;
 import utils.JPAUtil;
 
-import static utils.JPAUtil.*;
-
+/**
+ * Controlador responsável pelas operações de cadastro, consulta e remoção
+ * de veículos, clientes e vendas do sistema.
+ */
 public class Cadastro {
 
-    // Listas locais para armazenar temporariamente os dados, se necessário
-    ArrayList<Veiculo> listaVeiculos = new ArrayList<>();
-    ArrayList<Vendas> listaVendas = new ArrayList<>();
-    ArrayList<Cliente> listaCliente = new ArrayList<>();
-
-    // Metodo para adicionar um veículo de acordo com o tipo (Carro, Moto ou Caminhão)
+    /**
+     * Adiciona um veículo ao sistema baseado no tipo especificado.
+     * @param tipoVeiculo Tipo do veículo (cars, motorcycles, trucks)
+     * @param marca Marca do veículo
+     * @param modelo Modelo do veículo
+     * @param ano Ano do veículo
+     * @param codigoFipe Código FIPE
+     * @param preco Preço do veículo
+     * @param combustivel Tipo de combustível
+     * @param acronCombustivel Acrônimo do combustível
+     * @param mesReferencia Mês de referência da tabela FIPE
+     */
     public void adicionarVeiculo(String tipoVeiculo, String marca, String modelo, String ano, String codigoFipe, String preco, String combustivel, String acronCombustivel, String mesReferencia){
         if (tipoVeiculo.equals("cars")) {
             Carro carro = new Carro(1, preco, marca, modelo, ano, combustivel, codigoFipe, mesReferencia, acronCombustivel);
@@ -38,7 +42,9 @@ public class Cadastro {
         mostrarVeiculos(); // Exibe todos os veículos após adicionar
     }
 
-    // Atualiza o preço de um veículo consultando pelo ID
+    /**
+     * Atualiza o preço de um veículo específico.
+     */
     public void atualizarPreco() {
         Scanner scanner = new Scanner(System.in);
 
@@ -67,7 +73,9 @@ public class Cadastro {
         }
     }
 
-    // Pesquisa veículos pelo nome ou parte do nome do modelo
+    /**
+     * Busca veículos por nome parcial do modelo.
+     */
     public void pesquisaParcial(){
         Scanner scanner = new Scanner(System.in);
         VeiculoService service = new VeiculoService();
@@ -91,7 +99,9 @@ public class Cadastro {
         }
     }
 
-    // Lista todos os veículos cadastrados
+    /**
+     * Lista todos os veículos cadastrados no sistema.
+     */
     public void mostrarVeiculos() {
         VeiculoService vs = new VeiculoService();
         List<Veiculo> listaVeiculos = vs.listarTodos();
@@ -99,7 +109,7 @@ public class Cadastro {
         if (listaVeiculos.isEmpty()) {
             System.out.println("Nenhum veiculo adicionado ainda!");
         } else {
-            vs.mostrarQtdVeiculos(); // Exibe total de veículos
+            System.out.println("Total de veículos cadastrados: " + vs.contarVeiculos()); // Exibe total de veículos
             for (Veiculo v : listaVeiculos) {
                 System.out.println("--------------------------------------------------------");
                 System.out.println("Id: " + v.getId());
@@ -116,7 +126,9 @@ public class Cadastro {
         }
     }
 
-    // Remove um veículo por ID
+    /**
+     * Remove um veículo do sistema pelo ID.
+     */
     public void removerVeiculo(){
         mostrarVeiculos(); // Exibe todos os veículos antes de remover
         Scanner scanner = new Scanner(System.in);
@@ -124,7 +136,7 @@ public class Cadastro {
 
         try {
             Long id = Long.parseLong(scanner.nextLine());
-            EntityManager em = emf.createEntityManager(); // emf é o EntityManagerFactory
+            EntityManager em = JPAUtil.getEntityManager();
             Veiculo veiculo = em.find(Veiculo.class, id);
 
             if (veiculo != null) {
@@ -145,14 +157,21 @@ public class Cadastro {
         }
     }
 
-    // Adiciona um cliente ao sistema
+    /**
+     * Adiciona um novo cliente ao sistema.
+     * @param cpf CPF do cliente
+     * @param dataNascimento Data de nascimento
+     * @param nomeCliente Nome do cliente
+     */
     public void adicionarCliente(String cpf, String dataNascimento, String nomeCliente){
         Cliente cliente = new Cliente(nomeCliente, cpf, dataNascimento);
         new ClienteRepository().salvar(cliente);
         mostrarClientes(); // Mostra todos os clientes após cadastro
     }
 
-    // Lista todos os clientes
+    /**
+     * Lista todos os clientes cadastrados.
+     */
     public void mostrarClientes(){
         ClienteService vs = new ClienteService();
         List<Cliente> listaClientes = vs.listarTodos();
@@ -160,7 +179,7 @@ public class Cadastro {
         if(listaClientes.isEmpty()){
             System.out.println("Nenhum cliente adicionado ainda!");
         } else {
-            vs.mostrarQtdCliente(); // Exibe total
+            System.out.println("Total de clientes cadastrados: " + vs.contarClientes()); // Exibe total
             for(Cliente c: listaClientes){
                 System.out.println("--------------------------------------------------------");
                 System.out.println("Id: " + c.getId());
@@ -171,7 +190,9 @@ public class Cadastro {
         }
     }
 
-    // Remove um cliente pelo ID
+    /**
+     * Remove um cliente do sistema pelo ID.
+     */
     public void deletarCliente(){
         mostrarClientes();
         Scanner scanner = new Scanner(System.in);
@@ -179,7 +200,7 @@ public class Cadastro {
 
         try {
             Long id = Long.parseLong(scanner.nextLine());
-            EntityManager em = emf.createEntityManager();
+            EntityManager em = JPAUtil.getEntityManager();
             Cliente cliente = em.find(Cliente.class, id);
 
             if (cliente != null) {
@@ -200,7 +221,9 @@ public class Cadastro {
         }
     }
 
-    // Cadastra uma venda ligando cliente e veículo
+    /**
+     * Registra uma nova venda associando cliente e veículo.
+     */
     public void adicionarVenda() {
         Scanner scanner = new Scanner(System.in);
 
@@ -258,7 +281,7 @@ public class Cadastro {
         if (listaVendas.isEmpty()) {
             System.out.println("Nenhuma venda registrada.");
         } else {
-            vendaService.mostrarQuantidadeDeVendas();
+            System.out.println("Total de vendas realizadas: " + vendaService.contarVendas());
             for (Vendas v : listaVendas) {
                 System.out.println("--------------------------------------------------------");
                 System.out.println("ID da Venda: " + v.getId());

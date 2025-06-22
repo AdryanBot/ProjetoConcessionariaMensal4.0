@@ -75,11 +75,8 @@ public class VendasService {
         mostrarClientesPorVeiculo(idVeiculo);
     }
 
-    // Metodo para mostrar o total de vendas realizadas
-    public void mostrarQuantidadeDeVendas() {
-        // Chama o metodo contarVendas do repositório para contar o total de vendas
-        Long total = vendaRepo.contarVendas();
-        System.out.println("Total de vendas: " + total);
+    public Long contarVendas() {
+        return vendaRepo.contarVendas();
     }
 
 }

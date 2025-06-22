@@ -1,4 +1,4 @@
-package ui;
+package view;
 
 import javax.swing.*;
 
@@ -51,14 +51,24 @@ public class NavigationController {
         cadastroPanel.showCadastroVeiculo(painelPrincipal);
     }
 
-    public void showRemoverCliente() {
-        clearPanel();
-        cadastroPanel.showRemoverCliente(painelPrincipal);
-    }
+
 
     public void showRemoverVeiculo() {
         clearPanel();
-        cadastroPanel.showRemoverVeiculo(painelPrincipal);
+        cadastroPanel.showRemoverVeiculo(painelPrincipal, this::refreshVeiculosData);
+    }
+
+    public void showRemoverCliente() {
+        clearPanel();
+        cadastroPanel.showRemoverCliente(painelPrincipal, this::refreshClientesData);
+    }
+
+    private void refreshVeiculosData() {
+        // Atualiza dados de veículos em todas as telas relevantes
+    }
+
+    private void refreshClientesData() {
+        // Atualiza dados de clientes em todas as telas relevantes
     }
 
     private void clearPanel() {
